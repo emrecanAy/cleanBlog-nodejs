@@ -65,8 +65,6 @@ app.get('/posts/:id', async (req, res) => {
 
 app.put('/posts/:id', async (req, res) => {
   const post = await Blog.findOne({ _id: req.params.id });
-  console.log(req.params.id); //sorunsuz geliyor.
-  console.log(req.body); //boş obje dönüyor.
   post.title = req.body.title;
   post.detail = req.body.detail;
 
