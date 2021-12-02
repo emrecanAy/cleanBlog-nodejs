@@ -47,6 +47,13 @@ app.post('/posts', async (req, res) => {
   res.redirect('/');
 });
 
+app.get('/posts/:id', async (req, res) => {
+  const blog = await Blog.findById(req.params.id);
+  res.render('post', {
+    blog,
+  });
+});
+
 const port = 3000;
 app.listen(port, () => {
   console.log(`Sunucu port:${port}'de yayınlandı...`);
