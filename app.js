@@ -6,7 +6,8 @@ const ejs = require('ejs');
 const path = require('path');
 
 const Blog = require('./models/Blog');
-const { RSA_NO_PADDING } = require('constants');
+const postsController = require('./controllers/postsController');
+const pagesController = require('./controllers/pagesController');
 
 const app = express();
 
@@ -30,53 +31,16 @@ app.use(
 );
 
 //Routes
-app.get('/', async (req, res) => {
-  const blogs = await Blog.find({}).sort('-dateCreated');
-  res.render('index', {
-    blogs,
-  });
-});
+app.get('/', postsController.getAllPosts);
+app.get('/posts/:id', postsController.getPost);
+app.post('/posts', postsController.createPost);
+app.put('/posts/:id', postsController.updatePost);
+app.delete('/posts/:id', postsController.deletePost)
 
-app.get('/about', (req, res) => {
-  res.render('about');
-});
-
-app.get('/add_post', (req, res) => {
-  res.render('add_post');
-});
-
-app.get('/posts/edit/:id', async (req, res) => {
-  const post = await Blog.findOne({ _id: req.params.id });
-  res.render('edit', {
-    post,
-  });
-});
-
-app.get('/post', (req, res) => {
-  res.render('post');
-});
-
-app.get('/posts/:id', async (req, res) => {
-  const blog = await Blog.findById(req.params.id);
-  res.render('post', {
-    blog,
-  });
-});
-
-app.put('/posts/:id', async (req, res) => {
-  const post = await Blog.findOne({ _id: req.params.id });
-  post.title = req.body.title;
-  post.detail = req.body.detail;
-
-  post.save();
-
-  res.redirect(`/posts/${req.params.id}`);
-});
-
-app.post('/posts', async (req, res) => {
-  await Blog.create(req.body);
-  res.redirect('/');
-});
+app.get('/about', pagesController.getAboutPage);
+app.get('/add_post', pagesController.getAddPostPage);
+app.get('/posts/edit/:id', pagesController.getEditPage);
+app.get('/post', pagesController.getPostPage);
 
 const port = 3000;
 app.listen(port, () => {
